@@ -1,0 +1,3 @@
+[submodule "Klise"]
+	path = themes/Klise
+	url = https://github.com/dewjohn/hexo-theme-klise
