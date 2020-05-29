@@ -1,11 +1,11 @@
 # Site settings
-title: Your site
+title: Lyteins's Blog
 description: >
-    Your description
-author: Your name
-email: your@e.mail
+    Fly me to the moon~
+author: lyteins
+email: lyteins@gmail.com
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://yourname.github.io" # the base hostname & protocol for your site
+url: "https://lllyteins.github.io" # the base hostname & protocol for your site
 twitter_username: YourTwitter
 github_username:  YourGitHub
 
