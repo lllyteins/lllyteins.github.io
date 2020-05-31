@@ -1,5 +1,6 @@
 # Site settings
 title: Lyteins's Blog
+markdown: kramdown
 description: >
     CANTA PER ME
 author: lyteins
