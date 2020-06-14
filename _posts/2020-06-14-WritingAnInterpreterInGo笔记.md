@@ -21,7 +21,8 @@ comments: true
 - the internal object system 内部对象系统(？)
 - the evaluator 求值器(？)  
 # Lexer
-词法分析，也就是将原代码字符串切分为一个个的token，因此首先需要定义当前语言中所有的token。定义一个token数据结构为
+词法分析，也就是将原代码字符串切分为一个个的token，因此首先需要定义当前语言中所有的token。定义一个token数据结构为  
+
 ```go
 type TokenType string
 type Token struct {
@@ -30,7 +31,8 @@ type Token struct {
 }
 ```
 即由token类型与其值构成，如“5”的type是“INT”，字面值为“5”。  
-另外，定义了所有的token类型，包括变量标识符、运算符、分隔符、关键词等。
+另外，定义了所有的token类型，包括变量标识符、运算符、分隔符、关键词等。  
+
 ```go
 const (
 	ILLEGAL = "ILLEGAL"
@@ -74,7 +76,8 @@ const (
 )
 ```
 其中ILLEGAL表示非法、无法识别的token，EOF表示到达文件末尾，停止解析。  
-准备好token后，就可以开始实现lexer。为了简化程序，这里并非采用读取文件的形式，而是输入一个字符串，然后每次调用NextToken()方法得到下一个token。定义lexer与其初始化方法为
+准备好token后，就可以开始实现lexer。为了简化程序，这里并非采用读取文件的形式，而是输入一个字符串，然后每次调用NextToken()方法得到下一个token。定义lexer与其初始化方法为  
+
 ```go
 type Lexer struct {
 	input        string
@@ -89,7 +92,8 @@ func New(input string) *Lexer {
 	return l
 }
 ```
-其中position指当前读到的位置，对应ch中保存的字符，readPosition指下一个应该读的位置。对应的readChar()方法为
+其中position指当前读到的位置，对应ch中保存的字符，readPosition指下一个应该读的位置。对应的readChar()方法为  
+
 ```go
 func (l *Lexer) readChar() {
 	if l.readPosition >= len(l.input) {
@@ -101,7 +105,8 @@ func (l *Lexer) readChar() {
 	l.readPosition += 1
 }
 ```
-当读到文件末尾，在这里也就是字符串末尾时，将ch设置为0，对应ASCII码中的NUL。同样，在这里为了简化程序，仅使用ASCII而不使用Unicode。接下来就是完整的NextToken()方法。
+当读到文件末尾，在这里也就是字符串末尾时，将ch设置为0，对应ASCII码中的NUL。同样，在这里为了简化程序，仅使用ASCII而不使用Unicode。接下来就是完整的NextToken()方法。  
+
 ```go
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
@@ -170,7 +175,8 @@ func (l *Lexer) NextToken() token.Token {
 	return tok
 }
 ```
-其中涉及到的函数为
+其中涉及到的函数为  
+
 ```go
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
@@ -224,7 +230,8 @@ func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
 ```
-观察核心的NextToken()方法。首先，调用skipWhitespace()方法，跳过空格、换行等间隔符号。首先检查各类关键词、运算符、分隔符等。在涉及到二义性时，调用peekChar()方法进行检查，比如“=”与“==”，选择最长的一个。之后便是区分变量标识符与数字。现在，我们明白为什么变量命名的时候，不能以数字开头，只能字母或下划线了。
+观察核心的NextToken()方法。首先，调用skipWhitespace()方法，跳过空格、换行等间隔符号。首先检查各类关键词、运算符、分隔符等。在涉及到二义性时，调用peekChar()方法进行检查，比如“=”与“==”，选择最长的一个。之后便是区分变量标识符与数字。现在，我们明白为什么变量命名的时候，不能以数字开头，只能字母或下划线了。  
+
 ```go
 func LookupIdent(ident string) TokenType {
 	if tok, ok := keywords[ident]; ok {
@@ -234,7 +241,8 @@ func LookupIdent(ident string) TokenType {
 }
 ```
 在将变量标识符识别成功后，需要通过保存的关键词map进行查询确定是否是关键词。  
-在完成lexer后，需要实现一个REPL(Read Eval Print Loop)，也就是类似于Python中的交互模式。具体为
+在完成lexer后，需要实现一个REPL(Read Eval Print Loop)，也就是类似于Python中的交互模式。具体为  
+
 ```go
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
