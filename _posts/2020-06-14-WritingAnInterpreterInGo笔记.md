@@ -265,5 +265,86 @@ func Start(in io.Reader, out io.Writer) {
 ```
 从main函数中启动REPL，将os.Stdin和os.Stdout传入该方法中，每次获取一行进行解析，返回所有的token。
 # Parsing
+parser的输入为从lexer得到的所有token，对其进行分析、构造得到抽象语法树(Abstract Syntax Tree, AST)。  
+整体来看，所有的语句可以分为statement与expression，其中statement如“a = 1”，没有返回值；expression如“2 + 5”、“add(1, 2)”等，具有返回值。  
+首先定义parser相关数据结构为
+```go
+type Parser struct {
+	l *lexer.Lexer
+	curToken token.Token
+	peekToken token.Token 
+}
+func New(l *lexer.Lexer) *Parser { 
+	p := &Parser{l: l}
+	// Read two tokens, so curToken and peekToken are both set
+	p.nextToken() p.nextToken()
+	return p 
+}
+func (p *Parser) nextToken() { 
+	p.curToken = p.peekToken p.peekToken = p.l.NextToken()
+}
+func (p *Parser) ParseProgram() *ast.Program { 		return nil
+}
+```
+nextToken()等与lex中char相关类似。整体的parse逻辑可以近似表示为
+```c++
+function parseProgram() { 
+	program = newProgramASTNode()
+	advanceTokens()
+	for (currentToken() != EOF_TOKEN) {
+		statement = null
+		if (currentToken() == LET_TOKEN) {
+			statement = parseLetStatement()
+		} else if (currentToken() == RETURN_TOKEN) {
+			statement = parseReturnStatement()
+		} else if (currentToken() == IF_TOKEN) {
+			statement = parseIfStatement()
+		}
+		if (statement != null) {
+			program.Statements.push(statement)
+		}
+		advanceTokens() 
+	}
+	return program 
+}
+function parseLetStatement() {
+	advanceTokens()
+	identifier = parseIdentifier()
+	advanceTokens()
+	if currentToken() != EQUAL_TOKEN {
+		parseError("no equal sign!") return null
+	}
+	advanceTokens()
+	value = parseExpression()
+	variableStatement =newVariableStatementASTNode() variableStatement.identifier = identifier variableStatement.value = value
+	return variableStatement
+}
+function parseIdentifier() {
+	identifier = newIdentifierASTNode() identifier.token = currentToken()
+	return identifier
+}
+function parseExpression() {
+	if (currentToken() == INTEGER_TOKEN) {
+		if (nextToken() == PLUS_TOKEN) {
+			return parseOperatorExpression()
+		} else if (nextToken() == SEMICOLON_TOKEN) {
+			return parseIntegerLiteral()
+		}
+	} else if (currentToken() == LEFT_PAREN) {
+		return parseGroupedExpression() 
+	}
+// [...]
+}
+function parseOperatorExpression() {
+	operatorExpression = newOperatorExpression()
+	operatorExpression.left = parseIntegerLiteral() 
+	operatorExpression.operator = currentToken()
+	operatorExpression.right = parseExpression()
+	return operatorExpression()
+}
+// [...]
+```
+在parser中，将所有语句分为letstatement、returnstatement、expression等，采用recursive descent parser的方式，最终生成抽象语法树。例如输入
+``let x = 1 * 2 * 3``得到``let x = ((1 * 2) * 3)``。作者比较喜欢parser这个环节，实际上现代编译器中更多倾向于探究后续的代码生成与优化环节，这部分我也是速读了一下，了解了一下整体的逻辑与构成，不在上面花太多时间。
 # Evaluation
 # Extending the Interpreter
