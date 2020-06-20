@@ -348,3 +348,4 @@ function parseOperatorExpression() {
 ``let x = 1 * 2 * 3``得到``let x = ((1 * 2) * 3)``。作者比较喜欢parser这个环节，实际上现代编译器中更多倾向于探究后续的代码生成与优化环节，这部分我也是速读了一下，了解了一下整体的逻辑与构成，不在上面花太多时间。
 # Evaluation
 # Extending the Interpreter
+后面两部分与现在做的事情暂时相关程度不高，先跳过(崩撤卖溜
