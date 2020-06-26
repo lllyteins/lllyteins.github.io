@@ -7,10 +7,10 @@ author: lyteins
 email: lyteins@gmail.com
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://lllyteins.github.io" # the base hostname & protocol for your site
-twitter_username: YourTwitter
-github_username:  YourGitHub
+twitter_username: lyteins
+github_username:  lllyteins
 
-disqus_shortname: YourDisqusShortname
+#disqus_shortname: YourDisqusShortname
 
 # Build settings
 include: [_pages]
