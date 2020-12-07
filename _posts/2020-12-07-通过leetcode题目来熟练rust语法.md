@@ -12,10 +12,10 @@ categories:
 use std::collections::HashMap;
 use std::vec::Vec;
 
-// 1. Two Sum
 struct Solution {}
 
 impl Solution {
+    // 1. Two Sum
     pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
         let mut check = HashMap::new();
         let mut idx = 0;
