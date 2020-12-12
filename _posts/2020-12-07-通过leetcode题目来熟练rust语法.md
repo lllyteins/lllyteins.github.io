@@ -50,6 +50,47 @@ impl Solution {
         }
         vec![]
     }
+
+    // 2. Add Two Numbers
+    pub fn add_two_numbers(l1: Option<Box<ListNode>>, l2: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        match (l1, l2) {
+            (None, None) => None,
+            (Some(num), None) | (None, Some(num)) => Some(num),
+            (Some(num1), Some(num2)) => {
+                let cur_sum = num1.val + num2.val;
+                match cur_sum < 10 {
+                    true => Some(Box::new(ListNode {
+                        val: cur_sum,
+                        next: Solution::add_two_numbers(num1.next, num2.next),
+                    })),
+                    false => {
+                        let cur_add = Some(Box::new(ListNode::new(1)));
+                        Some(Box::new(ListNode {
+                            val: cur_sum - 10,
+                            next: Solution::add_two_numbers(Solution::add_two_numbers(num1.next, cur_add), num2.next),
+                        }))
+                    }
+                }
+            }
+        }
+    }
+
+    // 3. Longest Substring Without Repeating Characters
+    pub fn length_of_longest_substring(s: String) -> i32 {
+        let mut result = 0;
+        let mut cur_begin = -1;
+        let mut check = HashMap::new();
+        for (idx, v) in s.chars().enumerate() {
+            if let Some(&last_idx) = check.get(&v) {
+                if last_idx > cur_begin {
+                    cur_begin = last_idx;
+                }
+            }
+            check.insert(v, idx as i32);
+            result = max(result, idx as i32 - cur_begin);
+        }
+        return result;
+    }
 }
 
 #[cfg(test)]
